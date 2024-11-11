@@ -1,5 +1,7 @@
+import { env } from '../env'
+
 export const getTasks = async (): Promise<TasksResponse[]> => {
-  const response = await fetch('http://localhost:3000/tasks')
+  const response = await fetch(`${env.APIURL}/tasks`)
   const data = await response.json()
   return data.result
 }
@@ -7,7 +9,7 @@ export const getTasks = async (): Promise<TasksResponse[]> => {
 export const createTask = async (
   task: CreateTaskRequest
 ): Promise<TasksResponse> => {
-  const response = await fetch('http://localhost:3000/tasks', {
+  const response = await fetch(`${env.APIURL}/tasks`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -22,7 +24,7 @@ export const changeTaskOrder = async (
   id: string,
   order: number
 ): Promise<TasksResponse> => {
-  const response = await fetch(`http://localhost:3000/tasks/order/${id}`, {
+  const response = await fetch(`${env.APIURL}tasks/order/${id}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -36,7 +38,7 @@ export const changeTaskOrder = async (
 export const updateTask = async (
   task: UpdateTaskRequest
 ): Promise<TasksResponse> => {
-  const response = await fetch(`http://localhost:3000/tasks/${task.id}`, {
+  const response = await fetch(`${env.APIURL}/tasks/${task.id}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -52,13 +54,13 @@ export const updateTask = async (
 }
 
 export const deleteTask = async (id: string) => {
-  await fetch(`http://localhost:3000/tasks/${id}`, {
+  await fetch(`${env.APIURL}/tasks/${id}`, {
     method: 'DELETE',
   })
 }
 
 export const completeTask = async (id: string): Promise<TasksResponse> => {
-  const response = await fetch(`http://localhost:3000/tasks/complete/${id}`, {
+  const response = await fetch(`${env.APIURL}/tasks/complete/${id}`, {
     method: 'PATCH',
   })
   const data = await response.json()

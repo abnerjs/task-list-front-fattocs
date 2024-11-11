@@ -38,7 +38,7 @@ const TaskList = ({ data }: Props) => {
     if (over && active && active !== over) {
       const result = await changeTaskOrder(
         active.id,
-        over.data.current.sortable.index
+        over.data.current.sortable.index + 1
       )
 
       queryClient.invalidateQueries({ queryKey: ['tasks'] })

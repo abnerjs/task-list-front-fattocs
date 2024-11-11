@@ -83,7 +83,7 @@ export type CreateTaskRequest = {
 
 export type UpdateTaskRequest = {
   id: string
-  name: string
-  cost: string
-  limit: Date
+  name?: string
+  cost?: string
+  limit?: Date
 }

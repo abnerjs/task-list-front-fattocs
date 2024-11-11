@@ -13,7 +13,6 @@ import { Button } from './ui/Button'
 import Input from './ui/Input'
 import Label from './ui/Label'
 import { Icon } from '@iconify/react/dist/iconify.js'
-import dayjs from 'dayjs'
 
 interface Props {
   change?: TasksResponse
@@ -35,25 +34,38 @@ const createTaskSchema = z.object({
       const date = new Date(val)
       return date
     })
-    .refine((val) => val.getTime() < new Date().getTime(), {
+    .refine((val) => val.getTime() > new Date().getTime(), {
       message: 'Data deve ser no futuro',
     }),
 })
 
+const editTaskSchema = z.object({
+  name: z.string().optional(),
+  cost: z.string().optional(),
+  limit: z
+    .string()
+    .transform((val) => {
+      const date = new Date(val)
+      return date
+    })
+    .optional(),
+})
+
 type CreateTaskSchema = z.infer<typeof createTaskSchema>
+
+type EditTaskSchema = z.infer<typeof editTaskSchema>
 
 const TaskForm = ({ change }: Props) => {
   const queryClient = useQueryClient()
-  const { register, handleSubmit, formState, reset } =
-    useForm<CreateTaskSchema>({
-      resolver: zodResolver(createTaskSchema),
-    })
+  const { register, handleSubmit, formState, reset } = useForm({
+    resolver: zodResolver(change ? editTaskSchema : createTaskSchema),
+  })
 
-  async function onSubmit(data: CreateTaskSchema) {
+  async function onSubmit(data: CreateTaskSchema | EditTaskSchema) {
     if (change) {
       await updateTask({ id: change.id, ...data })
     } else {
-      await createTask(data)
+      await createTask(data as CreateTaskSchema)
     }
 
     queryClient.invalidateQueries({ queryKey: ['tasks'] })
@@ -66,7 +78,9 @@ const TaskForm = ({ change }: Props) => {
       <div className='flex flex-col gap-6 h-full'>
         <div className='flex flex-col gap-3'>
           <div className='flex items-center justify-between'>
-            <DialogTitle>Cadastrar tarefa</DialogTitle>
+            <DialogTitle>
+              {change ? 'Editar tarefa' : 'Cadastrar tarefa'}
+            </DialogTitle>
             <DialogClose asChild>
               <Button
                 variant='rounded'
@@ -77,7 +91,9 @@ const TaskForm = ({ change }: Props) => {
             </DialogClose>
           </div>
           <DialogDescription>
-            Adicione tarefas que você deseja cadastrar para serem realizadas.
+            {change
+              ? 'Edite os campos que deseja alterar.'
+              : 'Adicione tarefas que você deseja cadastrar para serem realizadas.'}
           </DialogDescription>
         </div>
         <form
@@ -93,11 +109,13 @@ const TaskForm = ({ change }: Props) => {
                 id='name'
                 type='text'
                 placeholder='Praticar exercícios, enviar emails, etc'
+                defaultValue={change?.name}
+                key={change ? change.id : 'new-task'}
                 {...register('name')}
               />
               {formState.errors.name && (
                 <p className='text-xs text-red-500'>
-                  {formState.errors.name.message}
+                  {formState.errors.name?.message as string}
                 </p>
               )}
             </div>
@@ -127,12 +145,14 @@ const TaskForm = ({ change }: Props) => {
                   type='number'
                   placeholder='1000,00'
                   className='pl-10 w-full'
+                  defaultValue={change?.cost}
+                  key={change ? change.id : 'new-task'}
                   {...register('cost')}
                 />
               </div>
               {formState.errors.cost && (
                 <p className='text-xs text-red-500'>
-                  {formState.errors.cost.message}
+                  {formState.errors.cost?.message as string}
                 </p>
               )}
             </div>
@@ -141,11 +161,17 @@ const TaskForm = ({ change }: Props) => {
               <Input
                 id='limit'
                 type='datetime-local'
+                defaultValue={
+                  change
+                    ? new Date(change.limit).toISOString().slice(0, 16)
+                    : undefined
+                }
+                key={change ? change.id : 'new-task'}
                 {...register('limit')}
               />
               {formState.errors.limit && (
                 <p className='text-xs text-red-500'>
-                  {formState.errors.limit.message}
+                  {formState.errors.limit?.message as string}
                 </p>
               )}
             </div>

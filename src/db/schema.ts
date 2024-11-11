@@ -1,5 +1,5 @@
 import { createId } from '@paralleldrive/cuid2'
-import { integer, numeric, timestamp } from 'drizzle-orm/pg-core'
+import { integer, numeric, timestamp, boolean } from 'drizzle-orm/pg-core'
 import { pgTable, text } from 'drizzle-orm/pg-core'
 import { sql } from 'drizzle-orm'
 
@@ -8,6 +8,7 @@ export const tasks = pgTable('tasks', {
   name: text('name').notNull(),
   cost: numeric('cost', { precision: 19, scale: 2 }).notNull(),
   limit: timestamp('limit', { withTimezone: true }).notNull(),
+  completed: boolean('completed').notNull().default(false),
   order: integer('order')
     .notNull()
     .$defaultFn(

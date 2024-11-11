@@ -5,6 +5,7 @@ import { createTask } from '../../services/create-task'
 import { updateTask } from '../../services/update-task'
 import { deleteTask } from '../../services/delete-task'
 import { changeTaskOrder } from '../../services/change-order-task'
+import { completeTask } from '../../services/complete-task'
 
 export const taskRoute: FastifyPluginAsyncZod = async (app) => {
   app.get('/tasks', async (_request, reply) => {
@@ -41,7 +42,7 @@ export const taskRoute: FastifyPluginAsyncZod = async (app) => {
     }
   )
 
-  app.put(
+  app.patch(
     '/tasks/:id',
     {
       schema: {
@@ -88,8 +89,8 @@ export const taskRoute: FastifyPluginAsyncZod = async (app) => {
     }
   )
 
-  app.put(
-    '/tasks/:id/order',
+  app.patch(
+    '/tasks/order/:id',
     {
       schema: {
         params: z.object({
@@ -105,6 +106,24 @@ export const taskRoute: FastifyPluginAsyncZod = async (app) => {
       const { order } = request.body as { order: number }
 
       const result = await changeTaskOrder(id, order)
+
+      return reply.status(201).send(result.task)
+    }
+  )
+
+  app.patch(
+    '/tasks/complete/:id',
+    {
+      schema: {
+        params: z.object({
+          id: z.string(),
+        }),
+      },
+    },
+    async (request, reply) => {
+      const { id } = request.params as { id: string }
+
+      const result = await completeTask(id)
 
       return reply.status(201).send(result.task)
     }

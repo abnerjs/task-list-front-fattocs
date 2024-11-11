@@ -48,8 +48,8 @@ export const taskRoute: FastifyPluginAsyncZod = async (app) => {
       schema: {
         body: z.object({
           name: z.string().optional(),
-          cost: z.number().optional(),
-          limit: z.date().optional(),
+          cost: z.string().optional(),
+          limit: z.string().optional(),
         }),
         params: z.object({
           id: z.string(),
@@ -60,7 +60,7 @@ export const taskRoute: FastifyPluginAsyncZod = async (app) => {
       const { name, cost, limit } = request.body as {
         name?: string
         cost?: string
-        limit?: Date
+        limit?: string
       }
 
       const id = request.params.id as string

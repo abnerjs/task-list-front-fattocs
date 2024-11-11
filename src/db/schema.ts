@@ -6,7 +6,7 @@ import { sql } from 'drizzle-orm'
 export const tasks = pgTable('tasks', {
   id: text('id').primaryKey().$defaultFn(createId),
   name: text('name').notNull(),
-  cost: numeric('cost', { precision: 19, scale: 2 }).notNull(),
+  cost: numeric('cost', { precision: 12, scale: 2 }).notNull(),
   limit: timestamp('limit', { withTimezone: true }).notNull(),
   completed: boolean('completed').notNull().default(false),
   order: integer('order')

@@ -7,7 +7,7 @@
     "dev": "tsx watch --env-file .env src/http/server.ts",
     "seed": "tsx --env-file .env src/db/seed.ts",
     "cleardb": "tsx --env-file .env src/db/cleardb.ts",
-    "build": "tsx build"
+    "build": "tsc"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",

@@ -51,12 +51,10 @@ export const updateTask = async (
   return data.result
 }
 
-export const deleteTask = async (id: string): Promise<TasksResponse> => {
-  const response = await fetch(`http://localhost:3000/tasks/${id}`, {
+export const deleteTask = async (id: string) => {
+  await fetch(`http://localhost:3000/tasks/${id}`, {
     method: 'DELETE',
   })
-  const data = await response.json()
-  return data.result
 }
 
 export const completeTask = async (id: string): Promise<TasksResponse> => {

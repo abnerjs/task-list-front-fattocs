@@ -9,7 +9,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
       {...props}
       ref={ref}
       className={twMerge(
-        'px-4 h-12 bg-black border border-zinc-900 rounded-lg placeholder-zinc-400 outline-none text-sm hover:border-zinc-800 focus-visible:border-yellow-500 focus-visible:ring-4 ring-yellow-500/10',
+        'px-4 h-12 bg-black border border-zinc-900 rounded-lg placeholder-zinc-400 outline-none text-sm hover:border-zinc-800 focus-visible:border-sky-500 focus-visible:ring-4 ring-sky-500/10',
         props.className
       )}
     />
